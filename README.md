@@ -1,15 +1,3 @@
-Welcome to your new dbt project!
+# Transformation-and-Analysis-of-Airbnb-Data
+Developed DBT models for airbnb data transformation in snowflake &amp; published an executive dashboard leveraging this transformed data informing listings, reviews and hosts insights on preset (BI tool)
 
-### Using the starter project
-
-Try running the following commands:
-- dbt run
-- dbt test
-
-
-### Resources:
-- Learn more about dbt [in the docs](https://docs.getdbt.com/docs/introduction)
-- Check out [Discourse](https://discourse.getdbt.com/) for commonly asked questions and answers
-- Join the [chat](https://community.getdbt.com/) on Slack for live discussions and support
-- Find [dbt events](https://events.getdbt.com) near you
-- Check out [the blog](https://blog.getdbt.com/) for the latest news on dbt's development and best practices
