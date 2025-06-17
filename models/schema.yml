@@ -1,0 +1,185 @@
+version: 2
+
+models:
+  - name: dim_listings_cleaned
+    description: This model transforms and cleanses raw Airbnb listing data to create a structured and standardized table. It includes essential details such as listing ID, name, room type, minimum nights, host ID, price, and timestamps for creation and updates. The model ensures data consistency by handling edge cases like zero minimum nights and formatting price values.
+    columns:
+
+      - name: listing_id
+        description: A unique identifier for each listing in the dataset, derived from the raw listings table.
+        tests:
+          - unique
+          - not_null
+        data_type: number
+      - name: host_id
+        description: The unique identifier for the host associated with the listing.
+        tests:
+          - not_null
+          - relationships:
+              to: ref('dim_hosts_cleaned')
+              field: host_id
+        data_type: number
+      - name: room_type
+        description: The type of room offered in the listing, such as 'Entire home/apt', 'Private room', or 'Shared room'.
+        tests:
+          - accepted_values:
+              values:
+                - Entire home/apt
+                - Hotel room
+                - Private room
+                - Shared room
+        data_type: varchar
+      - name: minimum_nights
+        description: 'The minimum number of nights required for a booking. If the value is 0, it is replaced with 1 to ensure a valid minimum stay.'
+        tests:
+          - positive_value
+        data_type: number
+      - name: listing_name
+        description: The name or title of the listing, as provided by the host in the raw data.
+        data_type: varchar
+      - name: price
+        description: The price of the listing, converted from a string with a dollar sign to a decimal format for easier calculations.
+        data_type: number
+      - name: created_at
+        description: The timestamp indicating when the listing was initially created in the source system.
+        data_type: timestamp_ntz
+      - name: updated_at
+        description: The timestamp indicating the most recent update to the listing in the source system.
+        data_type: timestamp_ntz
+
+  - name: dim_hosts_cleaned
+    description: This model transforms and cleanses raw Airbnb host data, ensuring consistent formatting and handling of missing values. It provides a refined table containing host details, including host ID, name, superhost status, and timestamps for record creation and updates.
+    columns:
+
+      - name: host_id
+        description: A unique identifier for each host. This is derived from the ID column in the raw_hosts table.
+        tests:
+          - unique
+          - not_null
+        data_type: number
+      - name: host_name
+        description: The name of the host. If the name is missing, it defaults to 'Anonymus'.
+        tests:
+          - not_null
+        data_type: varchar
+      - name: is_superhost
+        description: Indicates whether the host is a superhost. If the value is missing, it defaults to 'N/A'.
+        tests:
+          - accepted_values:
+              values:
+                - f
+                - t
+        data_type: varchar
+      - name: created_at
+        description: The timestamp indicating when the host record was initially created in the source system.
+        data_type: timestamp_ntz
+      - name: updated_at
+        description: The timestamp indicating the most recent update to the host record in the source system.
+        data_type: timestamp_ntz
+
+  - name: dim_listings_w_hosts
+    tests:
+      - dbt_expectations.expect_table_row_count_to_equal_other_table:
+          compare_model: source('airbnb', 'listings')
+    columns:
+      - name: price
+        tests:
+          - dbt_expectations.expect_column_quantile_values_to_be_between:
+              quantile: 0.99
+              min_value: 50
+              max_value: 500
+          - dbt_expectations.expect_column_max_to_be_between:
+              max_value: 5000
+              config:
+                severity: warn
+          - dbt_expectations.expect_column_values_to_be_of_type:
+              column_type: number
+        description: The cost per night for booking this listing, expressed in the local currency.
+        data_type: number
+      - name: listing_id
+        description: A unique identifier for each listing in the Airbnb platform.
+        data_type: number
+      - name: listing_name
+        description: The name or title of the listing as provided by the host.
+        data_type: varchar
+      - name: room_type
+        description: The type of room offered in the listing, such as Entire home/apt, Private room, or Shared room.
+        data_type: varchar
+      - name: minimum_nights
+        description: The minimum number of nights required for booking this listing.
+        data_type: number
+      - name: host_id
+        description: A unique identifier for the host associated with this listing.
+        data_type: number
+      - name: host_name
+        description: The name of the host associated with the listing. This is sourced from the dim_hosts_cleaned table.
+        data_type: varchar
+      - name: host_is_superhost
+        description: Indicates whether the host is a superhost. A superhost is a highly-rated and experienced host, sourced from the dim_hosts_cleaned table.
+        data_type: varchar
+      - name: created_at
+        description: The timestamp when the listing was initially created. This is sourced from the dim_listings_cleaned table.
+        data_type: timestamp_ntz
+      - name: updated_at
+        description: The most recent update timestamp for either the listing or the host, determined by taking the greater value between the listing's UPDATED_AT and the host's UPDATED_AT.
+        data_type: timestamp_ntz
+    description: The dim_listings_w_hosts model combines data from cleaned listings (dim_listings_cleaned) and hosts tables (dim_hosts_cleaned) to provide a comprehensive view of Airbnb listings along with their associated host information. It includes details such as listing ID, name, room type, minimum nights, price, host ID, host name, superhost status, and timestamps for creation and updates. The model ensures the most recent update timestamp by taking the greatest value between the listing and host update timestamps.
+
+  - name: fct_reviews
+    description: This model processes and cleanses Airbnb reviews data, generating a unique identifier for each review and filtering out entries with null review text. It provides structured information about reviews, including listing ID, review date, reviewer name, review text, and sentiment analysis.
+    columns:
+
+      - name: listing_id
+        description: The unique identifier for the Airbnb listing associated with the review.
+        tests:
+          - relationships:
+              to: ref('dim_listings_cleansed')
+              field: listing_id
+        data_type: number
+      - name: reviewer_name
+        description: The name of the individual who provided the review for the listing.
+        tests:
+          - not_null
+        data_type: varchar
+      - name: review_sentiment
+        description: The sentiment analysis result of the review text, indicating whether the review is positive, negative, or neutral.
+        tests:
+          - accepted_values:
+              values:
+                - negative
+                - neutral
+                - positive
+        data_type: varchar
+      - name: review_id
+        description: A unique identifier for each review, generated using a hash of the listing ID, review date, reviewer name, and review text.
+        data_type: varchar
+      - name: review_date
+        description: The date when the review was submitted.
+        data_type: timestamp_ntz
+      - name: review_text
+        description: The textual content of the review provided by the reviewer, describing their experience or feedback.
+        data_type: varchar
+  - name: mart_fullmoon_reviews
+    description: The mart_fullmoon_reviews model combines Airbnb reviews data with full moon dates to determine whether a review was written during a full moon. It enriches the reviews dataset by adding a derived column, IS_FULL_MOON, which indicates if the review date coincides with a full moon date. This model helps analyze potential correlations between review sentiments and lunar phases.
+    columns:
+      - name: review_id
+        description: Unique identifier for each review in the dataset.
+        data_type: varchar
+      - name: listing_id
+        description: Unique identifier for the listing associated with the review.
+        data_type: number
+      - name: review_date
+        description: The date on which the review was submitted.
+        data_type: timestamp_ntz
+      - name: reviewer_name
+        description: The name of the individual who provided the review for the Airbnb listing.
+        data_type: varchar
+      - name: review_text
+        description: The textual content of the review provided by the reviewer, describing their experience or feedback.
+        data_type: varchar
+      - name: review_sentiment
+        description: The sentiment analysis result of the review text, indicating whether the review is positive, negative, or neutral.
+        data_type: varchar
+      - name: is_full_moon
+        description: Indicates whether the review date falls on or near a full moon. Possible values are 'full moon' if the review date matches a full moon date plus one day, and 'not full moon' otherwise.
+        data_type: varchar

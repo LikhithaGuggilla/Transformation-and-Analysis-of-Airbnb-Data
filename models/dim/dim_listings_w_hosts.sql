@@ -1,0 +1,20 @@
+WITH l AS (
+    SELECT * FROM {{ref('dim_listings_cleaned')}}
+),
+h AS (
+    SELECT * FROM {{ref('dim_hosts_cleaned')}}
+)
+
+SELECT
+l.LISTING_ID,
+l.LISTING_NAME,
+l.ROOM_TYPE,
+l.MINIMUM_NIGHTS,
+l.PRICE,
+l.HOST_ID,
+h.HOST_NAME,
+h.IS_SUPERHOST AS HOST_IS_SUPERHOST,
+l.CREATED_AT,
+GREATEST(l.UPDATED_AT,h.UPDATED_AT) AS UPDATED_AT
+FROM l 
+LEFT JOIN h on l.HOST_ID = h.HOST_ID

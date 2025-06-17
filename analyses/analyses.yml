@@ -1,0 +1,3 @@
+models:
+  - name: full_moon_no_sleep
+    description: The 'full_moon_no_sleep' model aggregates review data from the 'mart_fullmoon_reviews' table to analyze the sentiment of reviews based on whether they were written during a full moon. It provides the count of reviews grouped by the full moon status and sentiment, enabling insights into potential correlations between lunar phases and review sentiment.
