@@ -1,9 +1,7 @@
-# Transformation-and-Analysis-of-Airbnb-Data
-Developed DBT models for airbnb data transformation in snowflake &amp; published an executive dashboard leveraging this transformed data informing listings, reviews and hosts insights on preset (BI tool)
-
 # Airbnb Executive Dashboard & Data Pipeline
 This project delivers an Executive Dashboard for Airbnb analytics, providing insights into host activity, listing trends, and pricing. It features a transformational data pipeline transforming raw Airbnb data (listings, reviews, hosts) into actionable metrics.
-## Tech Stack Used
+
+## Tech Stack
 Snowflake | dbt | Preset | SQL | VS Code | Git 
 
 ## Dashboard Key Insights
@@ -25,7 +23,7 @@ Created aggregated analytics tables (e.g., `dim_listings_w_hosts`, `fct_reviews`
 These models are primarily SQL-based and focus on joining datasets, metrics like [XXX]
 -   **Snowflake:** Serves as the data warehouse for both raw source data and the transformed analytical tables created by dbt.
 
-[DATA LINEAGE]
+![DATALINEAGE](https://github.com/LikhithaGuggilla/Transformation-and-Analysis-of-Airbnb-Data/raw/main/Project%20Images/Data%20Lineage.png)
 
 ## Orchestration & Visualization
 
@@ -35,7 +33,7 @@ These models are primarily SQL-based and focus on joining datasets, metrics like
 
 * **Preset:** Connects directly to the Snowflake analytics marts to build and display the interactive dashboard. Access for the dashboard, typically through a dedicated `REPORTER` role, which is managed via dbt post-hooks that grant necessary `SELECT` permissions on the transformed data models after each dbt run.** 
 
-[DASHBOARD]
+![DASHBOARD](https://github.com/LikhithaGuggilla/Transformation-and-Analysis-of-Airbnb-Data/blob/main/Project%20Images/Executive%20Dashboard.png)
 
 
 ## Running This Project
