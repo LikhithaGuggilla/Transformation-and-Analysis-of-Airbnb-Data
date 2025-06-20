@@ -4,15 +4,6 @@ This project delivers an Executive Dashboard for Airbnb analytics, providing ins
 ## Tech Stack
 Snowflake | dbt | Preset | SQL | VS Code | Git 
 
-## Dashboard Key Insights
-
-The Preset (Apache Superset) dashboard visualizes:
-*   "Number of hosts" (14.1k) monitor the overall size of the host community & gives a snapshot of the platform's capacity to offer accommodations.
-*   "New listings" (2.07k in Nov 2021) track the rate at which new listings are being added and its accompanying trend line shows growth trajectory, highlighting recent spikes or dips.
-*   "Superhost distribution" (84.27% 'f' - not Superhost, 15.65% 't' - Superhost) assess the proportion of high-quality, experienced hosts and indicates the segment of hosts recognized for exceptional hospitality.
-*   "Price distribution" histogram shows the concentration of listings across different price brackets, helping to understand market positioning.
-*   "Full Moon vs Reviews" investigates unconventional correlations that might (or might not) affect guest experience. It attempts to see if there's any correlation between lunar cycles and the sentiment of reviews (positive, neutral, negative). Based on the visual, there appears to be no significant difference.
-
 ## Data & Transformations
 
 - **Source Data:** Airbnb data for `listings`, `reviews`, and `hosts` sourced from Amazon s3
@@ -25,15 +16,24 @@ These models are primarily SQL-based and focus on joining datasets, metrics like
 
 ![DATALINEAGE](https://github.com/LikhithaGuggilla/Transformation-and-Analysis-of-Airbnb-Data/raw/main/Project%20Images/Data%20Lineage.png)
 
+---
+
 ## Orchestration & Visualization
 
-*   **Dagster:** Defined assets based on dbt models; And orchestrated the dbt transformation pipeline, ensuring data models are updated reliably[XXX schedule] for the executive dashboard. 
+- **Dagster:** Defined assets based on dbt models; And orchestrated the dbt transformation pipeline, ensuring data models are updated reliably[XXX schedule] for the executive dashboard. 
 
 [DAGSTER LINEAGE]
 
-* **Preset:** Connects directly to the Snowflake analytics marts to build and display the interactive dashboard. Access for the dashboard, typically through a dedicated `REPORTER` role, which is managed via dbt post-hooks that grant necessary `SELECT` permissions on the transformed data models after each dbt run.** 
+- **Preset:** Connects directly to the Snowflake analytics marts to build and display the interactive dashboard. Access for the dashboard, typically through a dedicated `REPORTER` role, which is managed via dbt post-hooks that grant necessary `SELECT` permissions on the transformed data models after each dbt run.** 
 
 ![DASHBOARD](https://github.com/LikhithaGuggilla/Transformation-and-Analysis-of-Airbnb-Data/blob/main/Project%20Images/Executive%20Dashboard.png)
+
+The Preset (Apache Superset) dashboard visualizes:
+*   "Number of hosts" (14.1k) monitor the overall size of the host community & gives a snapshot of the platform's capacity to offer accommodations.
+*   "New listings" (2.07k in Nov 2021) track the rate at which new listings are being added and its accompanying trend line shows growth trajectory, highlighting recent spikes or dips.
+*   "Superhost distribution" (84.27% 'f' - not Superhost, 15.65% 't' - Superhost) assess the proportion of high-quality, experienced hosts and indicates the segment of hosts recognized for exceptional hospitality.
+*   "Price distribution" histogram shows the concentration of listings across different price brackets, helping to understand market positioning.
+*   "Full Moon vs Reviews" investigates unconventional correlations that might (or might not) affect guest experience. It attempts to see if there's any correlation between lunar cycles and the sentiment of reviews (positive, neutral, negative). Based on the visual, there appears to be no significant difference.
 
 
 ## Running This Project
