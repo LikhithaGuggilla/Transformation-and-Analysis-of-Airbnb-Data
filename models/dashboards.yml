@@ -4,7 +4,7 @@ exposures:
   - name: executive_dashboard
     label: Executive Dashboard
     type: dashboard
-    maturity: low
+    maturity: high
     url: https://625094cf.us1a.app.preset.io/superset/dashboard/p/7rvygqLQ4o5/
     description: Executive Dashboard about Airbnb listings and hosts
       
@@ -14,5 +14,5 @@ exposures:
       - ref('mart_fullmoon_reviews')
 
     owner:
-      name: Zoltan C. Toth
-      email: dbtstudent@gmail.com
+      name: Likhitha Guggilla
+      email: guggilla.likhitha4500@gmail.com
