@@ -71,7 +71,7 @@ To replicate this dashboard and pipeline:
     *   Create datasets from the dbt-generated analytics tables (e.g., `fct_listings_daily`, `dim_hosts`).
     *   Recreate or adapt the charts and dashboard shown in the screenshot.
 
-# Repo Structure
+## Repo Structure
 
 
 
