@@ -1,18 +1,19 @@
 # Airbnb Executive Dashboard & Data Pipeline
-This project delivers an Executive Dashboard for Airbnb analytics, providing insights into host activity, listing trends, and pricing. It features a transformational data pipeline transforming raw Airbnb data (listings, reviews, hosts) into actionable metrics.
+This project features a transformational data pipeline transforming raw Airbnb data (listings, reviews, hosts) into actionable metrics and delivers an Executive Dashboard for Airbnb analytics, providing insights into host activity, listing trends, and pricing.
 
-## Tech Stack
+**Tech Stack**
 Snowflake | dbt | Preset | SQL | VS Code | Git 
+
+---
 
 ## Data & Transformations
 
 - **Source Data:** Airbnb data for `listings`, `reviews`, and `hosts` sourced from Amazon s3
-- **dbt (Data Build Tool):**
-    -   **Staging:** Cleand and standardized raw data (e.g., `src_listings`, `src_reviews`, `src_hosts`).
-    -   **Marts:** 
-Created aggregated analytics tables (e.g., `dim_listings_w_hosts`, `fct_reviews`, `mart_fullmoon_reviews `) that directly feed the dashboard.
-These models are primarily SQL-based and focus on joining datasets, metrics like [XXX]
--   **Snowflake:** Serves as the data warehouse for both raw source data and the transformed analytical tables created by dbt.
+- **DBT (Data Build Tool):**
+    -   **Staging:** Cleaned and standardized raw data (e.g., `src_listings`, `src_reviews`, `src_hosts`).
+    -   **Marts:** Created aggregated analytics models (e.g., `dim_listings_w_hosts`, `fct_reviews`, `mart_fullmoon_reviews `) that directly feed the dashboard. These models are primarily SQL-based and     focus on joining datasets.
+    -   `dbt_utils`
+-   **Snowflake:** Served as the data warehouse for both raw source data and the transformed analytical models created by dbt.
 
 ![DATALINEAGE](https://github.com/LikhithaGuggilla/Transformation-and-Analysis-of-Airbnb-Data/raw/main/Project%20Images/Data%20Lineage.png)
 
@@ -20,11 +21,9 @@ These models are primarily SQL-based and focus on joining datasets, metrics like
 
 ## Orchestration & Visualization
 
-- **Dagster:** Defined assets based on dbt models; And orchestrated the dbt transformation pipeline, ensuring data models are updated reliably[XXX schedule] for the executive dashboard. 
+- **Dagster:** Defined assets based on dbt models and orchestrated the dbt transformation pipeline, ensuring data models are updated reliably for the executive dashboard. 
 
-[DAGSTER LINEAGE]
-
-- **Preset:** Connects directly to the Snowflake analytics marts to build and display the interactive dashboard. Access for the dashboard, typically through a dedicated `REPORTER` role, which is managed via dbt post-hooks that grant necessary `SELECT` permissions on the transformed data models after each dbt run.** 
+- **Preset:** Connected directly to the Snowflake analytics marts to build and display the interactive dashboard. Access for the dashboard, typically through a dedicated `REPORTER` role, is managed via dbt post-hooks that grant necessary `SELECT` permissions on the transformed data models after each dbt run.** 
 
 ![DASHBOARD](https://github.com/LikhithaGuggilla/Transformation-and-Analysis-of-Airbnb-Data/blob/main/Project%20Images/Executive%20Dashboard.png)
 
@@ -46,13 +45,13 @@ To replicate this dashboard and pipeline:
     *   Install dbt (`dbt-snowflake==1.9.0`), Dagster (`dagster`, `dagster-dbt==1.1.0`).
 
 2.  **Setup:**
-    *   Clone this repository [URL]
+    *   Clone this repository [https://github.com/LikhithaGuggilla/Transformation-and-Analysis-of-Airbnb-Data.git]
     *   Configure `dbt` (via `profiles.yml`) to connect to your Snowflake instance.
     *   Configure `Dagster` (via `workspace.yaml`) to locate the pipeline definitions.
     *   Ensure your Snowflake user has permissions for the target database/schemas.
 
 3.  **Pipeline Execution:**
-- Load source data (CSVs for listings, reviews, hosts) from Amazon S3 [URL] into your Snowflake staging area.
+- Load source data (CSVs for listings, reviews, hosts) from Amazon S3 [ https://dbtlearn.s3.amazonaws.com/hosts.csv, https://dbtlearn.s3.amazonaws.com/reviews.csv ,https://dbtlearn.s3.amazonaws.com/listings.csv] into your Snowflake staging area.
     - Navigate to the `dbt_project` directory and run:
         ```bash
         dbt run  # To execute transformations
@@ -66,7 +65,7 @@ To replicate this dashboard and pipeline:
 
 4.  **Dashboard Setup:**
     *   In Preset, connect to your Snowflake database.
-    *   Create datasets from the dbt-generated analytics tables (e.g., `fct_listings_daily`, `dim_hosts`).
+    *   Create datasets from the dbt-generated analytics tables (e.g., `fct_reviews`, `dim_listings_w_hosts`, `mart_full_moon_reviews`).
     *   Recreate or adapt the charts and dashboard shown in the screenshot.
 
 ## Repo Structure
